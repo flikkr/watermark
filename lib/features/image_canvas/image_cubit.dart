@@ -20,6 +20,4 @@ abstract class ImageCubit extends Cubit<Uint8List?> {
   void removeImage() => emit(null);
 }
 
-class WatermarkImageCubit extends ImageCubit {}
-
 class EditedImageCubit extends ImageCubit {}

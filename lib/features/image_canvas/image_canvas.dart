@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:watermark/image_canvas/image_cubit.dart';
-import 'package:watermark/image_canvas/image_viewer.dart';
+import 'package:watermark/features/image_canvas/image_cubit.dart';
+import 'package:watermark/features/image_canvas/image_viewer.dart';
 
 class ImageCanvas extends StatefulWidget {
   final Uint8List? image;
@@ -30,16 +30,14 @@ class _ImageCanvasState extends State<ImageCanvas> {
   @override
   Widget build(BuildContext context) {
     return Expanded(
-      child: Center(
-        child: BlocBuilder<EditedImageCubit, Uint8List?>(
-          builder: (context, state) {
-            if (state == null) {
-              return emptyState(context);
-            } else {
-              return ImageViewer(image: state);
-            }
-          },
-        ),
+      child: BlocBuilder<EditedImageCubit, Uint8List?>(
+        builder: (context, state) {
+          if (state == null) {
+            return emptyState(context);
+          } else {
+            return ImageViewer(image: state);
+          }
+        },
       ),
     );
 
@@ -76,12 +74,14 @@ class _ImageCanvasState extends State<ImageCanvas> {
   }
 
   Widget emptyState(BuildContext context) {
-    return ElevatedButton.icon(
-      icon: const Icon(Icons.upload),
-      label: const Text('Upload image'),
-      onPressed: () {
-        BlocProvider.of<EditedImageCubit>(context).uploadImage();
-      },
+    return Center(
+      child: ElevatedButton.icon(
+        icon: const Icon(Icons.upload),
+        label: const Text('Upload image'),
+        onPressed: () {
+          BlocProvider.of<EditedImageCubit>(context).uploadImage();
+        },
+      ),
     );
   }
 }

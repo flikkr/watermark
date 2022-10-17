@@ -1,30 +1,37 @@
-// ignore_for_file: public_member_api_docs, sort_constructors_first
-import 'dart:convert';
-
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 
 class ImageSettings {
-  Uint8List? watermark;
+  PlatformFile? watermark;
+  Uint8List? watermarkBytes;
   bool repeated;
-  double rotation;
-  double xSpacing;
-  double ySpacing;
-  double xOffset;
-  double yOffset;
+  double? height;
+  double? width;
+  double? rotation;
+  double? xSpacing;
+  double? ySpacing;
+  double? xOffset;
+  double? yOffset;
 
   ImageSettings({
     this.watermark,
+    this.watermarkBytes,
     this.repeated = false,
-    this.rotation = 0,
-    this.xSpacing = 0,
-    this.ySpacing = 0,
-    this.xOffset = 0,
-    this.yOffset = 0,
+    this.height,
+    this.width,
+    this.rotation,
+    this.xSpacing,
+    this.ySpacing,
+    this.xOffset,
+    this.yOffset,
   });
 
   ImageSettings copyWith({
-    Uint8List? watermark,
+    PlatformFile? watermark,
+    Uint8List? watermarkBytes,
     bool? repeated,
+    double? height,
+    double? width,
     double? rotation,
     double? xSpacing,
     double? ySpacing,
@@ -33,7 +40,10 @@ class ImageSettings {
   }) {
     return ImageSettings(
       watermark: watermark ?? this.watermark,
+      watermarkBytes: watermarkBytes ?? this.watermarkBytes,
       repeated: repeated ?? this.repeated,
+      height: height ?? this.height,
+      width: width ?? this.width,
       rotation: rotation ?? this.rotation,
       xSpacing: xSpacing ?? this.xSpacing,
       ySpacing: ySpacing ?? this.ySpacing,
