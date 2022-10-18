@@ -41,9 +41,6 @@ class _AdjustableWidgetState extends State<AdjustableWidget> {
   @override
   void initState() {
     super.initState();
-    SchedulerBinding.instance.addPostFrameCallback((_) {
-      addOverlay(context);
-    });
   }
 
   Future<void> addOverlay(BuildContext context) async {
@@ -97,6 +94,10 @@ class _AdjustableWidgetState extends State<AdjustableWidget> {
 
   @override
   Widget build(BuildContext context) {
+    SchedulerBinding.instance.addPostFrameCallback((_) {
+      addOverlay(context);
+    });
+
     return RotationTransition(
       turns: AlwaysStoppedAnimation(widget.rotation),
       child: Opacity(
