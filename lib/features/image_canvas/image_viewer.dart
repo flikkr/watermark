@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:watermark/features/adjustable_widget/adjustable_widget.dart';
 import 'package:watermark/features/image_edit_panel/image_settings.dart';
 import 'package:watermark/features/image_edit_panel/image_settings_cubit.dart';
 
@@ -41,14 +42,18 @@ class ImageViewer extends StatelessWidget {
     //                       );
 
     return [
-      Positioned(
-        child: SizedBox(
-          child: RotationTransition(
-            turns: AlwaysStoppedAnimation(settings.rotation ?? 0),
-            child: Image.memory(bytes),
-          ),
+      AdjustableWidget(
+        opacity: settings.opacity,
+        rotation: settings.rotation,
+        height: settings.height!,
+        width: settings.width!,
+        child: Image.memory(
+          bytes,
+          fit: BoxFit.fill,
+          height: settings.height,
+          width: settings.width,
         ),
-      ),
+      )
     ];
   }
 }

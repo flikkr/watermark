@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,28 +21,77 @@ class ImageEditPanel extends StatefulWidget {
 }
 
 class _ImageEditPanelState extends State<ImageEditPanel> {
+  final heightController = TextEditingController();
+  final widthController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
       child: Padding(
         padding: const EdgeInsets.all(8.0),
         child: BlocBuilder<ImageSettingsCubit, ImageSettings>(
-          builder: (context, imageSettings) {
+          builder: (context, settings) {
             return Column(
               children: [
                 ImageEditPanelItem(
                   label: 'Rotation',
                   child: Slider(
-                    value: (imageSettings.rotation ?? 0) * 360,
+                    value: settings.rotation * 360,
                     min: 0,
                     max: 360,
-                    label: 'Rotation',
                     onChanged: (value) {
                       setState(() {
-                        final newSettings = imageSettings.copyWith(rotation: value / 360);
+                        final newSettings = settings.copyWith(rotation: value / 360);
                         BlocProvider.of<ImageSettingsCubit>(context).updateSettings(newSettings);
                       });
                     },
+                  ),
+                ),
+                ImageEditPanelItem(
+                  label: 'Opacity',
+                  child: Slider(
+                    value: settings.opacity,
+                    min: 0,
+                    max: 1.0,
+                    onChanged: (value) {
+                      setState(() {
+                        final newSettings = settings.copyWith(opacity: value);
+                        BlocProvider.of<ImageSettingsCubit>(context).updateSettings(newSettings);
+                      });
+                    },
+                  ),
+                ),
+                ImageEditPanelItem(
+                  label: 'Size',
+                  gap: 10,
+                  child: Row(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          settings = settings.copyWith(
+                            height: settings.initialHeight,
+                            width: settings.initialWidth,
+                          );
+                          BlocProvider.of<ImageSettingsCubit>(context).updateSettings(settings);
+                        },
+                        icon: const Icon(Icons.aspect_ratio),
+                      ),
+                      const SizedBox(width: 10),
+                      displayNumericalField(
+                        onChanged: (val) {
+                          settings = settings.copyWith(height: double.tryParse(val) ?? 0);
+                          BlocProvider.of<ImageSettingsCubit>(context).updateSettings(settings);
+                        },
+                      ),
+                      const SizedBox(width: 10),
+                      displayNumericalField(
+                        isHeight: false,
+                        onChanged: (val) {
+                          settings = settings.copyWith(width: double.tryParse(val) ?? 0);
+                          BlocProvider.of<ImageSettingsCubit>(context).updateSettings(settings);
+                        },
+                      ),
+                    ],
                   ),
                 ),
                 Expanded(
@@ -88,6 +138,23 @@ class _ImageEditPanelState extends State<ImageEditPanel> {
             );
           },
         ),
+      ),
+    );
+  }
+
+  Widget displayNumericalField({
+    bool isHeight = true,
+    void Function(String val)? onChanged,
+  }) {
+    return Expanded(
+      child: TextField(
+        decoration: InputDecoration(
+          suffix: Text(isHeight ? "Height" : "Width", style: const TextStyle(color: Colors.black45)),
+        ),
+        keyboardType: TextInputType.number,
+        inputFormatters: [FilteringTextInputFormatter.digitsOnly],
+        controller: isHeight ? heightController : widthController,
+        onChanged: onChanged,
       ),
     );
   }

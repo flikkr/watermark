@@ -7,7 +7,10 @@ class ImageSettings {
   bool repeated;
   double? height;
   double? width;
-  double? rotation;
+  double? initialHeight;
+  double? initialWidth;
+  double rotation;
+  double opacity;
   double? xSpacing;
   double? ySpacing;
   double? xOffset;
@@ -19,7 +22,10 @@ class ImageSettings {
     this.repeated = false,
     this.height,
     this.width,
-    this.rotation,
+    this.initialHeight,
+    this.initialWidth,
+    this.rotation = 0,
+    this.opacity = 1.0,
     this.xSpacing,
     this.ySpacing,
     this.xOffset,
@@ -32,11 +38,14 @@ class ImageSettings {
     bool? repeated,
     double? height,
     double? width,
+    double? initialHeight,
+    double? initialWidth,
     double? rotation,
     double? xSpacing,
     double? ySpacing,
     double? xOffset,
     double? yOffset,
+    double? opacity,
   }) {
     return ImageSettings(
       watermark: watermark ?? this.watermark,
@@ -44,11 +53,14 @@ class ImageSettings {
       repeated: repeated ?? this.repeated,
       height: height ?? this.height,
       width: width ?? this.width,
+      initialHeight: initialHeight ?? this.initialHeight,
+      initialWidth: initialWidth ?? this.initialWidth,
       rotation: rotation ?? this.rotation,
       xSpacing: xSpacing ?? this.xSpacing,
       ySpacing: ySpacing ?? this.ySpacing,
       xOffset: xOffset ?? this.xOffset,
       yOffset: yOffset ?? this.yOffset,
+      opacity: opacity ?? this.opacity,
     );
   }
 }
