@@ -3,8 +3,10 @@ import 'dart:ui';
 import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:watermark/features/dummy_canvas.dart';
 import 'package:watermark/features/image_canvas/image_canvas.dart';
 import 'package:watermark/features/image_canvas/image_cubit.dart';
 import 'package:watermark/features/image_edit_panel/image_edit_panel.dart';
@@ -45,24 +47,23 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final GlobalKey globalKey = GlobalKey();
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: MultiBlocProvider(
         providers: [
-          BlocProvider(create: (_) => EditedImageCubit()),
+          BlocProvider(create: (_) => ImageCubit()),
           BlocProvider(create: (_) => ImageSettingsCubit()),
         ],
         child: Row(
           mainAxisSize: MainAxisSize.max,
           children: const [
             ImageEditPanel(),
-            ImageCanvas(),
+            Expanded(child: ImageCanvas()),
           ],
         ),
       ),
     );
+    return TestPage();
   }
 }

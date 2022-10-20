@@ -5,8 +5,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-abstract class ImageCubit extends Cubit<Uint8List?> {
-  ImageCubit({Uint8List? initialState}) : super(initialState);
+ class ImageCubit extends Cubit<Uint8List?> {
+  ImageCubit([Uint8List? initialState]) : super(initialState);
+
+  void updateImage(Uint8List imageBytes) => emit(imageBytes);
 
   Future<void> uploadImage() async {
     final result = await FilePicker.platform.pickFiles(type: FileType.image);
@@ -20,4 +22,3 @@ abstract class ImageCubit extends Cubit<Uint8List?> {
   void removeImage() => emit(null);
 }
 
-class EditedImageCubit extends ImageCubit {}

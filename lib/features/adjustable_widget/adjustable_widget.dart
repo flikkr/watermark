@@ -33,6 +33,7 @@ class AdjustableWidget extends StatefulWidget {
 
 class _AdjustableWidgetState extends State<AdjustableWidget> {
   final GlobalKey key = GlobalKey();
+  final LayerLink layerLink = LayerLink();
   static const double handleSize = 10;
   bool isFocused = true;
   double top = 0;
@@ -47,37 +48,36 @@ class _AdjustableWidgetState extends State<AdjustableWidget> {
     RenderBox? renderBox = key.currentContext!.findRenderObject() as RenderBox?;
     Offset offset = renderBox!.localToGlobal(Offset.zero);
     final overlay = Overlay.of(context);
+    // overlay.
     final overlayEntry = OverlayEntry(
       builder: (context) {
-        return Stack(
-          children: [
-            // Container(
-            //   height: widget.height,
-            //   width: widget.width,
-            //   decoration: BoxDecoration(
-            //     border: Border.all(
-            //       color: Colors.blue,
-            //       width: 2,
-            //       strokeAlign: StrokeAlign.outside,
-            //     ),
-            //   ),
-            // ),
-            Positioned(
-              // left: -(handleSize / 2) - 1,
-              // left: -20,
-              left: offset.dx,
-              top: offset.dy,
-              child: DragHandle(
-                height: widget.height - handleSize,
-                width: handleSize,
-                debugColor: Colors.red.withOpacity(0.5),
-                hoverCursor: SystemMouseCursors.resizeLeftRight,
-                onDrag: (dx, dy) {
-                  print('$dx, $dy');
-                },
+        return CompositedTransformFollower(
+          link: layerLink,
+          child: Flow(
+            delegate: DragHandleDelegate(),
+            children: [
+              Container(
+                height: widget.height, //TODO: Change values
+                width: 30,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                    color: Colors.blue,
+                    width: 5,
+                    // strokeAlign: StrokeAlign.outside,
+                  ),
+                ),
               ),
-            ),
-          ],
+              // DragHandle(
+              //   height: widget.height - handleSize,
+              //   width: handleSize,
+              //   debugColor: Colors.red.withOpacity(0.5),
+              //   hoverCursor: SystemMouseCursors.resizeLeftRight,
+              //   onDrag: (dx, dy) {
+              //     print('$dx, $dy');
+              //   },
+              // ),
+            ],
+          ),
         );
       },
     );
@@ -100,11 +100,30 @@ class _AdjustableWidgetState extends State<AdjustableWidget> {
 
     return RotationTransition(
       turns: AlwaysStoppedAnimation(widget.rotation),
-      child: Opacity(
-        key: key,
-        opacity: widget.opacity,
-        child: widget.child,
+      child: CompositedTransformTarget(
+        link: layerLink,
+        child: Opacity(
+          key: key,
+          opacity: widget.opacity,
+          child: SizedBox(
+            height: widget.height,
+            width: widget.width,
+            child: widget.child,
+          ),
+        ),
       ),
     );
+  }
+}
+
+class DragHandleDelegate extends FlowDelegate {
+  @override
+  void paintChildren(FlowPaintingContext context) {
+    context.paintChild(0);
+  }
+
+  @override
+  bool shouldRepaint(covariant FlowDelegate oldDelegate) {
+    return false;
   }
 }

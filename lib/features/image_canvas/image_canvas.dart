@@ -29,16 +29,14 @@ class _ImageCanvasState extends State<ImageCanvas> {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: BlocBuilder<EditedImageCubit, Uint8List?>(
-        builder: (context, state) {
-          if (state == null) {
-            return emptyState(context);
-          } else {
-            return ImageViewer(image: state);
-          }
-        },
-      ),
+    return BlocBuilder<ImageCubit, Uint8List?>(
+      builder: (context, imageBytes) {
+        if (imageBytes == null) {
+          return emptyState(context);
+        } else {
+          return ImageViewer(image: imageBytes);
+        }
+      },
     );
 
     // RepaintBoundary(
@@ -79,7 +77,7 @@ class _ImageCanvasState extends State<ImageCanvas> {
         icon: const Icon(Icons.upload),
         label: const Text('Upload image'),
         onPressed: () {
-          BlocProvider.of<EditedImageCubit>(context).uploadImage();
+          BlocProvider.of<ImageCubit>(context).uploadImage();
         },
       ),
     );

@@ -17,13 +17,15 @@ class ImageViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return InteractiveViewer(
+      maxScale: 5,
       child: BlocBuilder<ImageSettingsCubit, ImageSettings>(
-        builder: (context, state) {
+        builder: (context, settings) {
           return Stack(
             alignment: Alignment.center,
             children: [
+              // the main image
               Image.memory(image),
-              ...displayWatermark(state),
+              ...displayWatermark(settings),
             ],
           );
         },
@@ -45,14 +47,9 @@ class ImageViewer extends StatelessWidget {
       AdjustableWidget(
         opacity: settings.opacity,
         rotation: settings.rotation,
-        height: settings.height!,
-        width: settings.width!,
-        child: Image.memory(
-          bytes,
-          fit: BoxFit.fill,
-          height: settings.height,
-          width: settings.width,
-        ),
+        height: 300, //TODO: fix height/width
+        width: 300,
+        child: Image.memory(bytes, fit: BoxFit.fill),
       )
     ];
   }
