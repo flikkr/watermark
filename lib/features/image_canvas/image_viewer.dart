@@ -3,13 +3,15 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watermark/features/adjustable_widget/adjustable_widget.dart';
+import 'package:watermark/features/image_canvas/image_viewer_interacting_cubit.dart';
 import 'package:watermark/features/image_edit_panel/image_settings.dart';
 import 'package:watermark/features/image_edit_panel/image_settings_cubit.dart';
 
 class ImageViewer extends StatelessWidget {
   final Uint8List image;
+  final TransformationController _transformationController = TransformationController(Matrix4.identity());
 
-  const ImageViewer({
+  ImageViewer({
     super.key,
     required this.image,
   });
@@ -18,6 +20,13 @@ class ImageViewer extends StatelessWidget {
   Widget build(BuildContext context) {
     return InteractiveViewer(
       maxScale: 5,
+      transformationController: _transformationController,
+      onInteractionUpdate: (scaleUpdateDetails) {
+        // print(_transformationController.value.getMaxScaleOnAxis());
+        BlocProvider.of<ImageViewerInteractingCubit>(context).updateIsInteracting(
+          _transformationController.value.getMaxScaleOnAxis(),
+        );
+      },
       child: BlocBuilder<ImageSettingsCubit, ImageSettings>(
         builder: (context, settings) {
           return Stack(

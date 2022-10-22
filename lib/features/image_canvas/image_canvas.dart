@@ -5,6 +5,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watermark/features/image_canvas/image_cubit.dart';
 import 'package:watermark/features/image_canvas/image_viewer.dart';
+import 'package:watermark/features/image_canvas/image_viewer_interacting_cubit.dart';
 
 class ImageCanvas extends StatefulWidget {
   final Uint8List? image;
@@ -34,7 +35,10 @@ class _ImageCanvasState extends State<ImageCanvas> {
         if (imageBytes == null) {
           return emptyState(context);
         } else {
-          return ImageViewer(image: imageBytes);
+          return BlocProvider(
+            create: (context) => ImageViewerInteractingCubit(),
+            child: ImageViewer(image: imageBytes),
+          );
         }
       },
     );

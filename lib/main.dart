@@ -1,6 +1,5 @@
 import 'dart:ui';
 
-import 'package:bitsdojo_window/bitsdojo_window.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/scheduler.dart';
@@ -12,6 +11,7 @@ import 'package:watermark/features/image_canvas/image_cubit.dart';
 import 'package:watermark/features/image_edit_panel/image_edit_panel.dart';
 import 'package:watermark/features/image_edit_panel/image_settings.dart';
 import 'package:watermark/features/image_edit_panel/image_settings_cubit.dart';
+import 'package:watermark/features/test.dart';
 
 Future<void> main() async {
   runApp(const MyApp());
@@ -49,21 +49,21 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: MultiBlocProvider(
-        providers: [
-          BlocProvider(create: (_) => ImageCubit()),
-          BlocProvider(create: (_) => ImageSettingsCubit()),
-        ],
-        child: Row(
-          mainAxisSize: MainAxisSize.max,
-          children: const [
-            ImageEditPanel(),
-            Expanded(child: ImageCanvas()),
-          ],
-        ),
-      ),
-    );
-    return TestPage();
+    // return Scaffold(
+    //   body: MultiBlocProvider(
+    //     providers: [
+    //       BlocProvider(create: (_) => ImageCubit()),
+    //       BlocProvider(create: (_) => ImageSettingsCubit()),
+    //     ],
+    //     child: Row(
+    //       mainAxisSize: MainAxisSize.max,
+    //       children: const [
+    //         ImageEditPanel(),
+    //         Expanded(child: ImageCanvas()),
+    //       ],
+    //     ),
+    //   ),
+    // );
+    return App();
   }
 }
