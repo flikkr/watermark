@@ -1,9 +1,8 @@
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watermark/features/adjustable_widget/adjustable_widget.dart';
-import 'package:watermark/features/image_canvas/image_viewer_interacting_cubit.dart';
+import 'package:watermark/features/image_canvas/image_viewer_interaction_cubit.dart';
 import 'package:watermark/features/image_edit_panel/image_settings.dart';
 import 'package:watermark/features/image_edit_panel/image_settings_cubit.dart';
 
@@ -18,47 +17,47 @@ class ImageViewer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return InteractiveViewer(
-      maxScale: 5,
-      transformationController: _transformationController,
-      onInteractionUpdate: (scaleUpdateDetails) {
-        // print(_transformationController.value.getMaxScaleOnAxis());
-        BlocProvider.of<ImageViewerInteractingCubit>(context).updateIsInteracting(
-          _transformationController.value.getMaxScaleOnAxis(),
-        );
-      },
-      child: BlocBuilder<ImageSettingsCubit, ImageSettings>(
-        builder: (context, settings) {
-          return Stack(
-            alignment: Alignment.center,
-            children: [
-              // the main image
-              Image.memory(image),
-              ...displayWatermark(settings),
-            ],
-          );
+    return LayoutBuilder(builder: (context, constraints) {
+      return InteractiveViewer(
+        constrained: true,
+        maxScale: 5,
+        transformationController: _transformationController,
+        onInteractionUpdate: (scaleUpdateDetails) {
+          BlocProvider.of<ImageViewerInteractionCubit>(context).updateInteraction(ImageViewerInteraction(
+            scale: _transformationController.value.getMaxScaleOnAxis(),
+            rotation: scaleUpdateDetails.rotation,
+            focalPoint: scaleUpdateDetails.focalPoint,
+            focalPointDelta: scaleUpdateDetails.focalPointDelta,
+            localFocalPoint: scaleUpdateDetails.localFocalPoint,
+          ));
         },
-      ),
-    );
+        child: BlocBuilder<ImageSettingsCubit, ImageSettings>(
+          builder: (context, settings) {
+            return Stack(
+              alignment: Alignment.center,
+              children: [
+                // the main image
+                Image.memory(image),
+                ...displayWatermark(settings),
+              ],
+            );
+          },
+        ),
+      );
+    });
   }
 
   List<Widget> displayWatermark(ImageSettings settings) {
     final bytes = settings.watermarkBytes;
     if (bytes == null) return [];
-    // if (settings.repeated) {}
-
-    // RotationTransition(
-    //                         turns: AlwaysStoppedAnimation(imageSettings.rotation),
-    //                         child: Image.memory(data),
-    //                       );
 
     return [
       AdjustableWidget(
         opacity: settings.opacity,
         rotation: settings.rotation,
-        height: 300, //TODO: fix height/width
-        width: 300,
-        child: Image.memory(bytes, fit: BoxFit.fill),
+        height: 300!, //TODO: fix
+        width: 300!,
+        child: Image.memory(bytes),
       )
     ];
   }

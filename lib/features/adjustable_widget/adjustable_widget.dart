@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/scheduler.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
-import 'package:watermark/features/adjustable_widget/drag_handle.dart';
-import 'package:watermark/features/image_canvas/image_viewer_interacting_cubit.dart';
+import 'package:watermark/features/image_canvas/image_viewer_interaction_cubit.dart';
 import 'package:watermark/features/image_edit_panel/image_settings.dart';
 
 class AdjustableWidget extends StatefulWidget {
@@ -47,13 +46,19 @@ class _AdjustableWidgetState extends State<AdjustableWidget> {
     super.initState();
   }
 
-  void addOverlay(BuildContext context, double scale) {
+  void addOverlay(
+    BuildContext context, {
+    required ImageViewerInteraction interaction,
+    double rotation = 0,
+  }) {
     RenderBox? renderBox = key.currentContext!.findRenderObject() as RenderBox?;
     Offset offset = renderBox!.localToGlobal(Offset.zero);
     final overlay = Overlay.of(context);
     overlayEntry?.remove();
     overlayEntry = OverlayEntry(
       builder: (context) {
+        double scale = interaction.scale;
+
         return Positioned(
           top: offset.dy,
           left: offset.dx,
@@ -70,36 +75,6 @@ class _AdjustableWidgetState extends State<AdjustableWidget> {
               ),
             ),
           ),
-          // child: Flow(
-          //   delegate: DragHandleDelegate(offset),
-          //   children: [
-          //     IgnorePointer(
-          //       child: ConstrainedBox(
-          //         constraints: BoxConstraints(maxHeight: 30, maxWidth: 30),
-          //         child: Container(
-          //           height: 30, //TODO: Change values
-          //           width: 30,
-          //           decoration: BoxDecoration(
-          //             border: Border.all(
-          //               color: Colors.blue,
-          //               width: 5,
-          //               // strokeAlign: StrokeAlign.outside,
-          //             ),
-          //           ),
-          //         ),
-          //       ),
-          //     ),
-          //     // DragHandle(
-          //     //   height: widget.height - handleSize,
-          //     //   width: handleSize,
-          //     //   debugColor: Colors.red.withOpacity(0.5),
-          //     //   hoverCursor: SystemMouseCursors.resizeLeftRight,
-          //     //   onDrag: (dx, dy) {
-          //     //     print('$dx, $dy');
-          //     //   },
-          //     // ),
-          //   ],
-          // ),
         );
       },
     );
@@ -116,10 +91,14 @@ class _AdjustableWidgetState extends State<AdjustableWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ImageViewerInteractingCubit, double?>(
-      builder: (context, state) {
+    return BlocBuilder<ImageViewerInteractionCubit, ImageViewerInteraction>(
+      builder: (context, interaction) {
         SchedulerBinding.instance.addPostFrameCallback((_) {
-          addOverlay(context, state ?? 0);
+          addOverlay(
+            context,
+            interaction: interaction,
+            rotation: widget.rotation,
+          );
         });
         return RotationTransition(
           turns: AlwaysStoppedAnimation(widget.rotation),

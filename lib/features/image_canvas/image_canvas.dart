@@ -5,7 +5,7 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:watermark/features/image_canvas/image_cubit.dart';
 import 'package:watermark/features/image_canvas/image_viewer.dart';
-import 'package:watermark/features/image_canvas/image_viewer_interacting_cubit.dart';
+import 'package:watermark/features/image_canvas/image_viewer_interaction_cubit.dart';
 
 class ImageCanvas extends StatefulWidget {
   final Uint8List? image;
@@ -33,10 +33,10 @@ class _ImageCanvasState extends State<ImageCanvas> {
     return BlocBuilder<ImageCubit, Uint8List?>(
       builder: (context, imageBytes) {
         if (imageBytes == null) {
-          return emptyState(context);
+          return Container();
         } else {
           return BlocProvider(
-            create: (context) => ImageViewerInteractingCubit(),
+            create: (context) => ImageViewerInteractionCubit(),
             child: ImageViewer(image: imageBytes),
           );
         }
@@ -73,17 +73,5 @@ class _ImageCanvasState extends State<ImageCanvas> {
     //                   return const CircularProgressIndicator();
     //                 },
     //               ),
-  }
-
-  Widget emptyState(BuildContext context) {
-    return Center(
-      child: ElevatedButton.icon(
-        icon: const Icon(Icons.upload),
-        label: const Text('Upload image'),
-        onPressed: () {
-          BlocProvider.of<ImageCubit>(context).uploadImage();
-        },
-      ),
-    );
   }
 }

@@ -1,17 +1,11 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:watermark/features/dummy_canvas.dart';
 import 'package:watermark/features/image_canvas/image_canvas.dart';
 import 'package:watermark/features/image_canvas/image_cubit.dart';
 import 'package:watermark/features/image_edit_panel/image_edit_panel.dart';
-import 'package:watermark/features/image_edit_panel/image_settings.dart';
 import 'package:watermark/features/image_edit_panel/image_settings_cubit.dart';
 import 'package:watermark/features/test.dart';
+import 'package:watermark/home_screen_content.dart';
 
 Future<void> main() async {
   runApp(const MyApp());
@@ -32,38 +26,30 @@ class MyApp extends StatelessWidget {
           isDense: true,
         ),
       ),
-      home: const MyHomePage(title: 'Flutter Demo Home Page'),
+      home: const HomeScreen(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key, required this.title});
 
   final String title;
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    // return Scaffold(
-    //   body: MultiBlocProvider(
-    //     providers: [
-    //       BlocProvider(create: (_) => ImageCubit()),
-    //       BlocProvider(create: (_) => ImageSettingsCubit()),
-    //     ],
-    //     child: Row(
-    //       mainAxisSize: MainAxisSize.max,
-    //       children: const [
-    //         ImageEditPanel(),
-    //         Expanded(child: ImageCanvas()),
-    //       ],
-    //     ),
-    //   ),
-    // );
-    return App();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => ImageCubit()),
+        BlocProvider(create: (_) => ImageSettingsCubit()),
+      ],
+      child: const HomeScreenContent()
+    );
+    // return App();
   }
 }
