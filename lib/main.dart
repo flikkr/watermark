@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:watermark/features/image_canvas/image_canvas.dart';
-import 'package:watermark/features/image_canvas/image_cubit.dart';
-import 'package:watermark/features/image_edit_panel/image_edit_panel.dart';
-import 'package:watermark/features/image_edit_panel/image_settings_cubit.dart';
-import 'package:watermark/features/test.dart';
-import 'package:watermark/home_screen_content.dart';
+import 'package:yawt/bloc/selected_image_cubit.dart';
+import 'package:yawt/bloc/watermark_cubit.dart';
+import 'package:yawt/src/image_canvas/image_canvas.dart';
+import 'package:yawt/bloc/images_cubit.dart';
+import 'package:yawt/src/widgets/image_side_panel/image_side_panel.dart';
+
+import 'src/widgets/image_bottom_panel/watermark_tools.dart';
 
 Future<void> main() async {
   runApp(const MyApp());
@@ -16,40 +17,50 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        inputDecorationTheme: const InputDecorationTheme(
-          border: OutlineInputBorder(),
-          isDense: true,
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(create: (_) => ImagesCubit()),
+        BlocProvider(create: (_) => WatermarkCubit()),
+        BlocProvider(create: (_) => SelectedImageCubit()),
+      ],
+      child: MaterialApp(
+        title: 'Flutter Demo',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          inputDecorationTheme: const InputDecorationTheme(
+            border: OutlineInputBorder(),
+            isDense: true,
+          ),
         ),
+        home: const App(),
       ),
-      home: const HomeScreen(title: 'Flutter Demo Home Page'),
     );
   }
 }
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.title});
+class App extends StatelessWidget {
+  const App({super.key});
 
-  final String title;
-
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(create: (_) => ImageCubit()),
-        BlocProvider(create: (_) => ImageSettingsCubit()),
-      ],
-      child: const HomeScreenContent()
+    return Scaffold(
+      body: Row(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          const ImagePanel(),
+          Expanded(
+            child: Column(
+              children: const [
+                Expanded(
+                  child: ImageCanvas(),
+                ),
+                WatermarkTools(),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
-    // return App();
   }
 }

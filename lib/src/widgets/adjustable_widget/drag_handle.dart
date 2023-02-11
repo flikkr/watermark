@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:watermark/features/adjustable_widget/adjustable_widget.dart';
+import 'package:yawt/src/widgets/adjustable_widget/adjustable_widget.dart';
 
 class DragHandle extends StatefulWidget {
   final void Function(double dx, double dy) onDrag;
